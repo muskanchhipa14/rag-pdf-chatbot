@@ -1,13 +1,16 @@
 import os
+import sys
+
 os.environ["PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION"] = "python"
+
+# Add project root to Python path (important for Streamlit Cloud)
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 import streamlit as st
 
-# Load environment variables
 from dotenv import load_dotenv
 load_dotenv()
 
-# Import core modules
 from src.loader import load_and_split_pdfs
 from src.retriever import RAGPipeline
 from src.llm import get_llm, SUPPORTED_MODELS
@@ -19,12 +22,12 @@ from src.prompts import (
     QUIZ_PROMPT,
     clean_and_parse_json
 )
+
 from src.utils import (
     inject_custom_css,
     get_document_analytics,
     export_chat_history_to_markdown
 )
-
 # ----------------- STREAMLIT CONFIG -----------------
 st.set_page_config(
     page_title="AI Study Assistant - Professional RAG Chatbot",
