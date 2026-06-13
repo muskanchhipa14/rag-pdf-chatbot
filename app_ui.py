@@ -1,5 +1,19 @@
 import os
+import sys
+
+# Override sqlite3 with pysqlite3 for ChromaDB compatibility on Streamlit Cloud
+try:
+    __import__('pysqlite3')
+    sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+except ImportError:
+    pass
+
 os.environ["PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION"] = "python"
+
+# Add project root and src directory to Python path (important for Streamlit Cloud)
+project_root = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(project_root)
+sys.path.append(os.path.join(project_root, "src"))
 
 import streamlit as st
 
