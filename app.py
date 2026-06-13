@@ -37,6 +37,13 @@ st.set_page_config(
 inject_custom_css()
 
 # ----------------- SESSION STATE INITIALIZATION -----------------
+if "session_id" not in st.session_state:
+    import uuid
+    st.session_state.session_id = uuid.uuid4().hex[:8]
+
+if "pipeline" not in st.session_state:
+    st.session_state.pipeline = None
+
 if "chat" not in st.session_state:
     st.session_state.chat = []
 
@@ -98,18 +105,7 @@ if uploaded_file_names != st.session_state.previous_files:
     st.session_state.summary_text = ""
     st.session_state.notes_text = ""
     st.session_state.starter_prompt = ""
-
-# Cache the heavy model load & RAG setup
-@st.cache_resource
-def load_pipeline_cached(file_names, _uploaded_files):
-    if not _uploaded_files:
-        return None
-    # Save files to data/ and split into semantic chunks
-    chunks = load_and_split_pdfs(_uploaded_files)
-    if not chunks:
-        return None
-    # Build vectorstore and index hybrid retriever
-    return RAGPipeline(chunks, persist_directory=None)
+    st.session_state.pipeline = None  # Reset the pipeline state!
 
 # Initialize RAG pipeline if files exist
 pipeline = None
@@ -117,11 +113,27 @@ system_ready = False
 analytics = {}
 
 if uploaded_files:
-    with st.sidebar.spinner("Indexing documents..."):
-        pipeline = load_pipeline_cached(uploaded_file_names, uploaded_files)
-        if pipeline:
-            system_ready = True
-            analytics = get_document_analytics(pipeline.chunks)
+    session_data_dir = os.path.join("data", st.session_state.session_id)
+    if st.session_state.pipeline is None:
+        with st.sidebar.spinner("Indexing documents..."):
+            # Clean session-specific data directory to prevent files accumulating
+            import shutil
+            if os.path.exists(session_data_dir):
+                try:
+                    shutil.rmtree(session_data_dir)
+                except Exception:
+                    pass
+            os.makedirs(session_data_dir, exist_ok=True)
+            
+            # Save files to session directory and split into semantic chunks
+            chunks = load_and_split_pdfs(uploaded_files, target_dir=session_data_dir)
+            if chunks:
+                st.session_state.pipeline = RAGPipeline(chunks, persist_directory=None)
+                
+    pipeline = st.session_state.pipeline
+    if pipeline:
+        system_ready = True
+        analytics = get_document_analytics(pipeline.chunks)
 
 # System Readiness Badge
 if system_ready:
@@ -164,7 +176,7 @@ if uploaded_files:
     # Map back to full local path of selected document
     selected_doc_path = None
     if selected_doc_name != "All Documents":
-        selected_doc_path = os.path.join("data", selected_doc_name)
+        selected_doc_path = os.path.join("data", st.session_state.session_id, selected_doc_name)
 else:
     selected_doc_path = None
 

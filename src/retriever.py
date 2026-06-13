@@ -1,7 +1,18 @@
+import streamlit as st
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_community.vectorstores import Chroma
 from rank_bm25 import BM25Okapi
 from sentence_transformers import CrossEncoder
+
+@st.cache_resource
+def get_embeddings_model():
+    return HuggingFaceEmbeddings(
+        model_name="sentence-transformers/all-MiniLM-L6-v2"
+    )
+
+@st.cache_resource
+def get_reranker_model():
+    return CrossEncoder("cross-encoder/ms-marco-MiniLM-L-6-v2")
 
 def expand_query(q):
     """
@@ -21,21 +32,21 @@ class RAGPipeline:
         tokenized_texts = [t.lower().split() for t in self.texts]
         self.bm25 = BM25Okapi(tokenized_texts)
         
-        # Initialize HuggingFace Embeddings
-        self.embeddings = HuggingFaceEmbeddings(
-            model_name="sentence-transformers/all-MiniLM-L6-v2"
-        )
+        # Initialize HuggingFace Embeddings (Cached globally)
+        self.embeddings = get_embeddings_model()
         
-        # Initialize Chroma vectorstore for semantic search
-        # Note: If persist_directory is provided, we can save/load.
+        # Initialize Chroma vectorstore with a unique collection name to prevent doc pollution across uploads
+        import uuid
+        collection_name = f"col_{uuid.uuid4().hex[:12]}"
         self.vectorstore = Chroma.from_documents(
             documents=chunks,
             embedding=self.embeddings,
+            collection_name=collection_name,
             persist_directory=persist_directory
         )
         
-        # Initialize CrossEncoder for reranking candidates
-        self.reranker = CrossEncoder("cross-encoder/ms-marco-MiniLM-L-6-v2")
+        # Initialize CrossEncoder for reranking candidates (Cached globally)
+        self.reranker = get_reranker_model()
 
     def retrieve(self, query, k_semantic=5, k_lexical=5, final_k=3, source_filter=None):
         """

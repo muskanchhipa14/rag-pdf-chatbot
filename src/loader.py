@@ -12,7 +12,7 @@ def save_uploaded_file(uploaded_file, target_dir="data"):
         f.write(uploaded_file.getbuffer())
     return save_path
 
-def load_and_split_pdfs(file_paths_or_uploaded_files, chunk_size=800, chunk_overlap=150):
+def load_and_split_pdfs(file_paths_or_uploaded_files, chunk_size=800, chunk_overlap=150, target_dir="data"):
     """
     Loads one or more PDFs, splits them into recursive character-based chunks,
     and returns the list of document chunks.
@@ -22,7 +22,7 @@ def load_and_split_pdfs(file_paths_or_uploaded_files, chunk_size=800, chunk_over
     for item in file_paths_or_uploaded_files:
         # Check if the item is a streamlit UploadedFile or a file path string
         if hasattr(item, "name") and hasattr(item, "getbuffer"):
-            file_path = save_uploaded_file(item)
+            file_path = save_uploaded_file(item, target_dir=target_dir)
         else:
             file_path = str(item)
             
