@@ -33,7 +33,12 @@ def inject_custom_css():
         /* Clean header & footer */
         #MainMenu {visibility: hidden;}
         footer {visibility: hidden;}
-        [data-testid="stHeader"] {display: none;}
+        [data-testid="stHeader"] {
+            background-color: transparent !important;
+        }
+        .stDeployButton {
+            display: none !important;
+        }
         
         /* Sidebar styling */
         [data-testid="stSidebar"] {

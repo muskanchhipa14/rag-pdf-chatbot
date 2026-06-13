@@ -56,7 +56,7 @@ You MUST respond with a valid JSON array of objects and NOTHING ELSE. Do not exp
 
 The JSON array must contain objects matching this exact structure:
 [
-  {
+  {{
     "question": "A clear, challenging question text?",
     "options": [
       "Option A text",
@@ -66,7 +66,7 @@ The JSON array must contain objects matching this exact structure:
     ],
     "answer": "Option B text",
     "explanation": "A concise explanation of why the correct option is right based on the text."
-  }
+  }}
 ]
 
 Make sure:
