@@ -264,18 +264,18 @@ with tab_chat:
                 # Render starter cards using Streamlit columns (since HTML buttons won't send callbacks easily)
                 col1, col2 = st.columns(2)
                 with col1:
-                    if st.button("📌 Summarize the core findings", use_container_width=True, key="start_1"):
-                        st.session_state.starter_prompt = "Summarize the core findings of this document."
+                    if st.button("📝 Summarize the document", use_container_width=True, key="start_1"):
+                        st.session_state.starter_prompt = "Provide a comprehensive summary of this document, highlighting the main points and key sections."
                         st.rerun()
-                    if st.button("🛠️ List key technical skills/projects", use_container_width=True, key="start_2"):
-                        st.session_state.starter_prompt = "Extract and list all the key technical skills, experience, and major projects mentioned."
+                    if st.button("🔑 Key Themes & Concepts", use_container_width=True, key="start_2"):
+                        st.session_state.starter_prompt = "Identify and explain the key themes, core concepts, or main ideas discussed in this document."
                         st.rerun()
                 with col2:
-                    if st.button("🔍 Explain the methodology used", use_container_width=True, key="start_3"):
-                        st.session_state.starter_prompt = "Explain the core methodology or logic presented in the document."
+                    if st.button("🔍 Analyze Structure & Logic", use_container_width=True, key="start_3"):
+                        st.session_state.starter_prompt = "Analyze the structure, methodology, narrative style, or logic of this document."
                         st.rerun()
-                    if st.button("🎓 List key takeaways & targets", use_container_width=True, key="start_4"):
-                        st.session_state.starter_prompt = "List the key takeaways and targets described by the author."
+                    if st.button("💡 Extract Highlights & Quotes", use_container_width=True, key="start_4"):
+                        st.session_state.starter_prompt = "Extract the most important quotes, key findings, or highlights from this document and explain their significance."
                         st.rerun()
                 
                 st.markdown("</div></div>", unsafe_allow_html=True)

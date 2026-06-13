@@ -57,6 +57,40 @@ def inject_custom_css():
             color: #f1f5f9;
         }
         
+        /* Force light text color on body and markdown elements for high contrast */
+        [data-testid="stAppViewContainer"] {
+            color: #f1f5f9 !important;
+        }
+        
+        [data-testid="stMarkdownContainer"] p, 
+        [data-testid="stMarkdownContainer"] li, 
+        [data-testid="stMarkdownContainer"] span,
+        [data-testid="stMarkdownContainer"] ol,
+        [data-testid="stMarkdownContainer"] ul {
+            color: #cbd5e1 !important;
+        }
+        
+        /* Ensure headers are white/bright */
+        h1, h2, h3, h4, h5, h6 {
+            color: #ffffff !important;
+        }
+        
+        /* Custom Alert styling (st.info, st.error, st.success, etc.) */
+        [data-testid="stAlert"] {
+            background-color: rgba(30, 41, 59, 0.8) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        }
+        [data-testid="stAlert"] [data-testid="stMarkdownContainer"] p,
+        [data-testid="stAlert"] [data-testid="stMarkdownContainer"] span,
+        [data-testid="stAlert"] [data-testid="stMarkdownContainer"] li {
+            color: #cbd5e1 !important;
+        }
+        
+        /* Ensure widget labels are bright and legible */
+        [data-testid="stWidgetLabel"] p, label {
+            color: #e2e8f0 !important;
+        }
+        
         /* Chat Input Styling */
         [data-testid="stChatInput"] {
             border-radius: 12px !important;
