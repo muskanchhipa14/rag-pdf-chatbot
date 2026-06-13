@@ -11,10 +11,10 @@ import streamlit as st
 from dotenv import load_dotenv
 load_dotenv()
 
-from src.loader import load_and_split_pdfs
-from src.retriever import RAGPipeline
-from src.llm import get_llm, SUPPORTED_MODELS
-from src.prompts import (
+from loader import load_and_split_pdfs
+from retriever import RAGPipeline
+from llm import get_llm, SUPPORTED_MODELS
+from prompts import (
     QA_SYSTEM_PROMPT,
     QA_USER_PROMPT,
     SUMMARY_PROMPT,
@@ -22,8 +22,7 @@ from src.prompts import (
     QUIZ_PROMPT,
     clean_and_parse_json
 )
-
-from src.utils import (
+from utils import (
     inject_custom_css,
     get_document_analytics,
     export_chat_history_to_markdown
